@@ -18,12 +18,12 @@ LIMITE_SAQUES = 3
 while True:
     opcao = input(menu)
 
-        #Pergunta qual valor o usuario quer depositar
+        # Pergunta qual valor o usuario quer depositar
     if opcao == "0":
         valor = float(input("Informe o valor do depósito: "))
 
-        #Verifica se o valor informado é positivo. Se for, adiciona ao saldo.
-        #Também registra a operação no extrato com duas casas decimais.
+        # Verifica se o valor informado é positivo. Se for, adiciona ao saldo.
+        # Também registra a operação no extrato com duas casas decimais.
         if valor > 0:
             saldo += valor
             extrato += f"Depósito: R$ {valor:.2f}\n"
@@ -36,12 +36,12 @@ while True:
     elif opcao == "1":
         valor = float(input("Informe o valor do saque: "))
 
-        #Verificações
+        # Verificações
         excedeu_saldo = valor > saldo
         excedeu_limite = valor > limite
         excedeu_saques = numero_saque >= LIMITE_SAQUES
         
-        #Mensagem informativa das verificações
+        # Mensagem informativa das verificações
         if excedeu_saldo:
             print("Operação falhou! Você não tem saldo suficiente.")
 
@@ -78,6 +78,6 @@ while True:
 
     elif opcao == "3":
         break
-     #Digita operação que não conheço
+     # Digita operação que não conheço
     else:
         print("Operação inválida, por favor selecione novamente a operação desejada.")
