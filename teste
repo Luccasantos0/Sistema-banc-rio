@@ -1,0 +1,115 @@
+from datetime import datetime
+
+# ================= DECORADOR DE LOG ===================
+def log_transacao(func):
+    def wrapper(*args, **kwargs):
+        resultado = func(*args, **kwargs)
+        print(f"[{datetime.now().strftime('%d/%m/%Y %H:%M:%S')}] Transação: {func.__name__.upper()}")
+        return resultado
+    return wrapper
+
+# ========== VARIÁVEIS INICIAIS ==========
+menu = """
+
+[0] Depositar
+[1] Sacar
+[2] Extrato
+[3] Sair
+
+> """
+
+saldo = 0
+limite = 500
+LIMITE_SAQUES = 3
+numero_saque = 0
+transacoes = []  # Lista de tuplas: (data_hora, tipo, valor)
+
+# ========== FUNÇÕES COM REGISTRO E FILTRO DE DATA ==========
+
+def transacoes_do_dia(transacoes):
+    hoje = datetime.now().strftime("%d/%m/%Y")
+    return [t for t in transacoes if t[0].startswith(hoje)]
+
+@log_transacao
+def depositar():
+    global saldo
+    if len(transacoes_do_dia(transacoes)) >= 10:
+        print("⚠️ Limite diário de 10 transações atingido!")
+        return
+
+    valor = float(input("Informe o valor do depósito: "))
+    if valor > 0:
+        saldo += valor
+        data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        transacoes.append((data_hora, "Depósito", valor))
+        print("Depósito realizado com sucesso!")
+    else:
+        print("Operação falhou! Valor inválido.")
+
+@log_transacao
+def sacar():
+    global saldo, numero_saque
+    if len(transacoes_do_dia(transacoes)) >= 10:
+        print("⚠️ Limite diário de 10 transações atingido!")
+        return
+
+    valor = float(input("Informe o valor do saque: "))
+
+    excedeu_saldo = valor > saldo
+    excedeu_limite = valor > limite
+    excedeu_saques = numero_saque >= LIMITE_SAQUES
+
+    if excedeu_saldo:
+        print("Operação falhou! Você não tem saldo suficiente.")
+    elif excedeu_limite:
+        print("Operação falhou! O valor do saque ultrapassa o limite de R$500.00.")
+    elif excedeu_saques:
+        print("Operação falhou! Número máximo de saques excedido.")
+    elif valor > 0:
+        saldo -= valor
+        numero_saque += 1
+        data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        transacoes.append((data_hora, "Saque", valor))
+        print("Saque realizado com sucesso!")
+    else:
+        print("Operação falhou! Valor inválido.")
+
+def exibir_extrato():
+    print("\n================ EXTRATO ================")
+    if not transacoes:
+        print("Não foram realizadas movimentações.")
+    else:
+        for data_hora, tipo, valor in transacoes:
+            print(f"{data_hora} - {tipo}: R$ {valor:.2f}")
+    print(f"\nSaldo atual: R$ {saldo:.2f}")
+    print("===========================================")
+
+# ========== LAÇO PRINCIPAL ==========
+while True:
+    opcao = input(menu)
+
+    if opcao == "0":
+        depositar()
+    elif opcao == "1":
+        sacar()
+    elif opcao == "2":
+        exibir_extrato()
+    elif opcao == "3":
+        print("Saindo...")
+        break
+    else:
+        print("Operação inválida, selecione novamente.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+        

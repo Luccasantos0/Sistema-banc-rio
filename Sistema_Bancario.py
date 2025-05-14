@@ -81,3 +81,11 @@ while True:
      #Digita operação que não conheço
     else:
         print("Operação inválida, por favor selecione novamente a operação desejada.")
+
+
+
+
+
+
+
+        
